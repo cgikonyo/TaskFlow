@@ -24,7 +24,7 @@
             <tbody>
                 @foreach($tasks as $task)
                     <tr>
-                        <td>{{ $task->id }}</td>
+                        <td>{{ $task->task_number }}</td>
                         <td>{{ $task->description }}</td>
                         <td>
                             <form method="POST" action="{{ route('tasks.update', $task) }}">

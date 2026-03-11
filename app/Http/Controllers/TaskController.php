@@ -37,9 +37,13 @@ class TaskController extends Controller
             abort(403, 'Unauthenticated');
         }
 
+        // get the next task number for this user
+        $nextTaskNumber = $user->tasks()->max('task_number') + 1;
+
         $user->tasks()->create([
             'description' => $request->description,
             'status' => $request->status,
+            'task_number' => $nextTaskNumber,
         ]);
 
         // 3. Redirect back
