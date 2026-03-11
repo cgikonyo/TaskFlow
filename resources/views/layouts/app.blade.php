@@ -27,6 +27,39 @@
                     </li>
 
                 </ul>
+                <ul class="navbar-nav ms-auto">
+                    @auth
+                        <li class="nav-item">
+                            <span class="navbar-text me-3">
+                                @php
+                                    $hour = now()->hour;
+                                    if ($hour < 12) {
+                                        $greeting = 'Good morning';
+                                    } elseif ($hour < 18) {
+                                        $greeting = 'Good afternoon';
+                                    } else {
+                                        $greeting = 'Good evening';
+                                    }
+                                @endphp
+                                {{ $greeting }}, {{ Auth::user()->first_name }}
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <form id="logout-form" action="{{ url('/logout') }}" method="POST"
+                                onsubmit="return confirm('Are you sure you want to log out?');">
+                                @csrf
+                                <button class="btn btn-link nav-link" type="submit">Logout</button>
+                            </form>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Register</a>
+                        </li>
+                    @endauth
+                </ul>
             </div>
         </div>
     </nav>

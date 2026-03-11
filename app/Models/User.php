@@ -19,6 +19,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
     ];
@@ -46,8 +48,10 @@ class User extends Authenticatable
         ];
     }
 
+    // define a hasMany relationship to Task model
     public function tasks()
     {
-        return $this->hasMany(task::class);
+        // use proper class name casing and ensure the model is imported
+        return $this->hasMany(Task::class);
     }
 }

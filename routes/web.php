@@ -4,17 +4,28 @@
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/tasks', [TaskController::class, 'index'])->middleware('auth');
+// all task routes should be protected by authentication
+Route::middleware(['auth'])->group(function () {
+    Route::resource('tasks', TaskController::class);
+});
 
+// optionally serve a simple homepage - could redirect to tasks
 Route::get('/', function () {
-    return view('tasks.index');
+    return redirect()->route('tasks.index');
 });
 
-Route::get('/tasks/create', function () {
-    return view('tasks.create');
+use App\Http\Controllers\AuthController;
+
+// authentication routes (only available to guests)
+Route::middleware('guest')->group(function () {
+    Route::get('login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('login', [AuthController::class, 'login']);
+    Route::get('register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('register', [AuthController::class, 'register']);
 });
 
-Route::post('/tasks', [TaskController::class, 'store']);
+// logout should be available to authenticated users
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 //replace the homepage
 //Handle the task submission data

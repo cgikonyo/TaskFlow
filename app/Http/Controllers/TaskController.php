@@ -26,12 +26,20 @@ class TaskController extends Controller
         // 1. Validate
         $request->validate([
             'description' => 'required|string|max:255',
+            'status' => 'required|in:pending,started,completed',
         ]);
 
         // 2. Save using the User relationship
-        auth()->user()->tasks()->create([
-            'description' => $request->description,
+        // make sure a user is authenticated before trying to access the relation
+        $user = auth()->user();
+        if (!$user) {
+            // this shouldn't happen if your routes are protected by auth middleware
+            abort(403, 'Unauthenticated');
+        }
 
+        $user->tasks()->create([
+            'description' => $request->description,
+            'status' => $request->status,
         ]);
 
         // 3. Redirect back
@@ -43,5 +51,24 @@ class TaskController extends Controller
     public function show(Task $task)
     {
         return view('tasks.show', compact('task'));
+    }
+
+    /**
+     * Update the specified task (mainly status changes).
+     */
+    public function update(Request $request, Task $task)
+    {
+        // ensure the authenticated user owns the task
+        if ($task->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'status' => 'required|in:pending,started,completed',
+        ]);
+
+        $task->update(['status' => $request->status]);
+
+        return redirect()->back()->with('success', 'Task updated!');
     }
 }

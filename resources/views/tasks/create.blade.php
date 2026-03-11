@@ -9,6 +9,15 @@
         </div>
 
         <div class="form-group">
+            <label for="status">Status</label>
+            <select class="form-control" name="status">
+                <option value="pending">Pending</option>
+                <option value="started">Started</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <button type="submit" class="btn btn-primary">Create Task</button>
         </div>
 
